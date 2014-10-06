@@ -14,9 +14,11 @@ var promise = require("./promise")["default"] || require("./promise");
 var safeString = require("./safe-string")["default"] || require("./safe-string");
 var join = require("./join")["default"] || require("./join");
 var sumBy = require("./sum-by")["default"] || require("./sum-by");
+var sum = require("./sum")["default"] || require("./sum");
 var concat = require("./concat")["default"] || require("./concat");
 var conditional = require("./conditional")["default"] || require("./conditional");
 var product = require("./product")["default"] || require("./product");
+var _utils = require("./utils")["default"] || require("./utils");
 
 function reverseMerge(dest, source) {
   for (var key in source) {
@@ -42,6 +44,7 @@ var Macros = {
   safeString: safeString,
   join: join,
   sumBy: sumBy,
+  sum: sum,
   concat: concat,
   conditional: conditional,
   product: product
@@ -55,6 +58,7 @@ if (Ember.libraries)
 exports.VERSION = VERSION;
 exports.Macros = Macros;
 exports.install = install;
+exports._utils = _utils;
 
 exports["default"] = {
   VERSION: VERSION,

@@ -13,9 +13,11 @@ import promise from './promise';
 import safeString from './safe-string';
 import join from './join';
 import sumBy from './sum-by';
+import sum from './sum';
 import concat from './concat';
 import conditional from './conditional';
 import product from './product';
+import _utils from './utils';
 
 function reverseMerge(dest, source) {
   for (var key in source) {
@@ -41,6 +43,7 @@ var Macros = {
   safeString: safeString,
   join: join,
   sumBy: sumBy,
+  sum: sum,
   concat: concat,
   conditional: conditional,
   product: product
@@ -54,7 +57,8 @@ if (Ember.libraries)
 export {
   VERSION,
   Macros,
-  install
+  install,
+  _utils
 };
 
 export default {
