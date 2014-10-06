@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import {retainByType, reduceComputedPropertyMacro} from './utils';
+import {reduceComputedPropertyMacro} from './utils';
 /**
 *  Returns the sum of some numeric properties and numeric constants
 *

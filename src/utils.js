@@ -47,10 +47,10 @@ export function getVal(val) {
 export function reduceComputedPropertyMacro(reducingFunction) {
   return function () {
     var mainArguments = Array.prototype.slice.call(arguments), // all arguments
-      propertyArguments = retainByType(mainArguments, 'string'),
-      self = this;
-    propertyArguments.push(function () {
+      propertyArguments = retainByType(mainArguments, 'string');
 
+    propertyArguments.push(function () {
+      var self = this;
       switch (mainArguments.length) {
 
         case 0:   // Handle zero-argument case

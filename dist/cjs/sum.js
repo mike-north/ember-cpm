@@ -1,6 +1,5 @@
 "use strict";
 var Ember = require("ember")["default"] || require("ember");
-var retainByType = require("./utils").retainByType;
 var reduceComputedPropertyMacro = require("./utils").reduceComputedPropertyMacro;
 /**
 *  Returns the sum of some numeric properties and numeric constants

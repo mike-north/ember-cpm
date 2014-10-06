@@ -3,7 +3,6 @@ define(
   function(__dependency1__, __dependency2__, __exports__) {
     "use strict";
     var Ember = __dependency1__["default"] || __dependency1__;
-    var retainByType = __dependency2__.retainByType;
     var reduceComputedPropertyMacro = __dependency2__.reduceComputedPropertyMacro;
     /**
     *  Returns the sum of some numeric properties and numeric constants
