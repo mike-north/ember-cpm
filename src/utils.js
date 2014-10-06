@@ -46,8 +46,9 @@ export function getVal(val) {
  */
 export function reduceComputedPropertyMacro(reducingFunction) {
   return function () {
-    var mainArguments = Array.prototype.slice.call(arguments); // all arguments
-    var propertyArguments = retainByType(mainArguments, 'string');
+    var mainArguments = Array.prototype.slice.call(arguments), // all arguments
+      propertyArguments = retainByType(mainArguments, 'string'),
+      self = this;
     propertyArguments.push(function () {
 
       switch (mainArguments.length) {
@@ -62,16 +63,16 @@ export function reduceComputedPropertyMacro(reducingFunction) {
           return mainArguments.reduce(
             function (prev, item, idx, enumerable) {
               // Evaluate "prev" value if this is the first time the reduce callback is called
-              var prevValue = idx === 1 ? getVal.call(this, prev) : prev,
+              var prevValue = idx === 1 ? getVal.call(self, prev) : prev,
 
                 // Evaluate the "item" value
-                itemValue = getVal.call(this, item);
-              
+                itemValue = getVal.call(self, item);
+
               // Call the reducing function, replacing "prev" and "item" arguments with
               // their respective evaluated values
-              return reducingFunction.apply(this, [prevValue, itemValue, idx, enumerable]);
+              return reducingFunction.apply(self, [prevValue, itemValue, idx, enumerable]);
 
-            }.bind(this)
+            }
           );
       }
     });
