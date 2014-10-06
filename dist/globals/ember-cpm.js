@@ -137,6 +137,7 @@ var promise = _dereq_("./promise")["default"] || _dereq_("./promise");
 var safeString = _dereq_("./safe-string")["default"] || _dereq_("./safe-string");
 var join = _dereq_("./join")["default"] || _dereq_("./join");
 var sumBy = _dereq_("./sum-by")["default"] || _dereq_("./sum-by");
+var sum = _dereq_("./sum")["default"] || _dereq_("./sum");
 var concat = _dereq_("./concat")["default"] || _dereq_("./concat");
 var _utils = _dereq_("./utils")["default"] || _dereq_("./utils");
 
@@ -164,6 +165,7 @@ var Macros = {
   safeString: safeString,
   join: join,
   sumBy: sumBy,
+  sum: sum,
   concat: concat,
 };
 var install = function(){ reverseMerge(Ember.computed, Macros); };
@@ -182,7 +184,7 @@ exports["default"] = {
   Macros: Macros,
   install: install
 };
-},{"./among":1,"./concat":2,"./encode-uri":5,"./encode-uri-component":4,"./first-present":6,"./fmt":7,"./html-escape":8,"./if-null":9,"./join":10,"./not-among":11,"./not-equal":12,"./not-match":13,"./promise":14,"./safe-string":15,"./sum-by":16,"./utils":17}],4:[function(_dereq_,module,exports){
+},{"./among":1,"./concat":2,"./encode-uri":5,"./encode-uri-component":4,"./first-present":6,"./fmt":7,"./html-escape":8,"./if-null":9,"./join":10,"./not-among":11,"./not-equal":12,"./not-match":13,"./promise":14,"./safe-string":15,"./sum":17,"./sum-by":16,"./utils":18}],4:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
 
@@ -430,6 +432,31 @@ exports["default"] = function EmberCPM_sumBy(dependentKey, propertyKey) {
   });
 }
 },{}],17:[function(_dereq_,module,exports){
+"use strict";
+var Ember = window.Ember["default"] || window.Ember;
+var retainByType = _dereq_("./utils").retainByType;
+var reduceComputedPropertyMacro = _dereq_("./utils").reduceComputedPropertyMacro;
+/**
+*  Returns the sum of some numeric properties and numeric constants
+*
+*  Example: 6 + 7 + 2 = 84
+*
+*  Usage:
+*    a: 6,
+*    b: 7,
+*    c: 2,
+*    d: sum('a', 'b', 'c'), // 15
+*    e: sum('a', 'b', 'c', 2) // 17
+*/
+
+var EmberCPM_sum = reduceComputedPropertyMacro(
+  function (prev, item) {
+    return prev + item;
+  }
+);
+
+exports["default"] = EmberCPM_sum;
+},{"./utils":18}],18:[function(_dereq_,module,exports){
 "use strict";
 /**
  * Retain items in an array based on type

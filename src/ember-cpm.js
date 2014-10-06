@@ -13,6 +13,7 @@ import promise from './promise';
 import safeString from './safe-string';
 import join from './join';
 import sumBy from './sum-by';
+import sum from './sum';
 import concat from './concat';
 import _utils from './utils';
 
@@ -40,6 +41,7 @@ var Macros = {
   safeString: safeString,
   join: join,
   sumBy: sumBy,
+  sum: sum,
   concat: concat,
 };
 var install = function(){ reverseMerge(Ember.computed, Macros); };
