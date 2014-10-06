@@ -16,6 +16,7 @@ var join = require("./join")["default"] || require("./join");
 var sumBy = require("./sum-by")["default"] || require("./sum-by");
 var concat = require("./concat")["default"] || require("./concat");
 var conditional = require("./conditional")["default"] || require("./conditional");
+var product = require("./product")["default"] || require("./product");
 
 function reverseMerge(dest, source) {
   for (var key in source) {
@@ -42,7 +43,8 @@ var Macros = {
   join: join,
   sumBy: sumBy,
   concat: concat,
-  conditional: conditional
+  conditional: conditional,
+  product: product
 };
 var install = function(){ reverseMerge(Ember.computed, Macros); };
 

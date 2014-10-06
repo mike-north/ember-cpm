@@ -173,6 +173,7 @@ var join = _dereq_("./join")["default"] || _dereq_("./join");
 var sumBy = _dereq_("./sum-by")["default"] || _dereq_("./sum-by");
 var concat = _dereq_("./concat")["default"] || _dereq_("./concat");
 var conditional = _dereq_("./conditional")["default"] || _dereq_("./conditional");
+var product = _dereq_("./product")["default"] || _dereq_("./product");
 
 function reverseMerge(dest, source) {
   for (var key in source) {
@@ -199,7 +200,8 @@ var Macros = {
   join: join,
   sumBy: sumBy,
   concat: concat,
-  conditional: conditional
+  conditional: conditional,
+  product: product
 };
 var install = function(){ reverseMerge(Ember.computed, Macros); };
 
@@ -216,7 +218,7 @@ exports["default"] = {
   Macros: Macros,
   install: install
 };
-},{"./among":1,"./concat":2,"./conditional":3,"./encode-uri":6,"./encode-uri-component":5,"./first-present":7,"./fmt":8,"./html-escape":9,"./if-null":10,"./join":11,"./not-among":12,"./not-equal":13,"./not-match":14,"./promise":15,"./safe-string":16,"./sum-by":17}],5:[function(_dereq_,module,exports){
+},{"./among":1,"./concat":2,"./conditional":3,"./encode-uri":6,"./encode-uri-component":5,"./first-present":7,"./fmt":8,"./html-escape":9,"./if-null":10,"./join":11,"./not-among":12,"./not-equal":13,"./not-match":14,"./product":15,"./promise":16,"./safe-string":17,"./sum-by":18}],5:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
 
@@ -413,6 +415,48 @@ exports["default"] = function EmberCPM_notMatch(dependentKey, regexp) {
 },{}],15:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
+/**
+*  Returns the product of some numeric properties and numeric constants
+*
+*  Example: 6 * 7 * 2 = 84
+*
+*  Usage:
+*    a: 6,
+*    b: 7,
+*    c: 2,
+*    d: product('a', 'b', 'c'), // 84
+*    e: product('a', 'b', 'c', 2) // 168
+*/
+
+
+exports["default"] = function EmberCPM_product () {
+  var mainArguments = Array.prototype.slice.call(arguments), // all arguments
+    propertyArguments = mainArguments.reject( // dependent properties
+      function (x) {
+        return Ember.typeOf(x) !== 'string';
+      }
+    );
+
+  propertyArguments.push(function () {
+
+    if (Ember.isEmpty(mainArguments)) {
+      return null;
+    }
+
+    var prod = 1;
+    for (var i = 0; i < mainArguments.length; i += 1) {
+      // handle either constants or numeric properties.
+      // Assumption: all non-string arguments to the macro are numeric constants
+      prod *= Ember.typeOf(mainArguments[i]) === 'string' ? this.get(mainArguments[i]) : mainArguments[i];
+    }
+
+    return prod;
+  });
+  return Ember.computed.apply(this, propertyArguments);
+}
+},{}],16:[function(_dereq_,module,exports){
+"use strict";
+var Ember = window.Ember["default"] || window.Ember;
 
 var get = Ember.get;
 var computed = Ember.computed;
@@ -426,7 +470,7 @@ exports["default"] = function EmberCPM_promise(dependentKey) {
     return $.when(value);
   });
 }
-},{}],16:[function(_dereq_,module,exports){
+},{}],17:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
 
@@ -443,7 +487,7 @@ exports["default"] = function EmberCPM_safeString(dependentKey) {
   });
 
 }
-},{}],17:[function(_dereq_,module,exports){
+},{}],18:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
 

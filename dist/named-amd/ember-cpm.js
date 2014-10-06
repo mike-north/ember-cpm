@@ -164,8 +164,8 @@ define("ember-cpm/conditional",
     }
   });
 define("ember-cpm",
-  ["ember","./among","./encode-uri-component","./encode-uri","./first-present","./fmt","./html-escape","./if-null","./not-among","./not-equal","./not-match","./promise","./safe-string","./join","./sum-by","./concat","./conditional","exports"],
-  function(__dependency1__, __dependency2__, __dependency3__, __dependency4__, __dependency5__, __dependency6__, __dependency7__, __dependency8__, __dependency9__, __dependency10__, __dependency11__, __dependency12__, __dependency13__, __dependency14__, __dependency15__, __dependency16__, __dependency17__, __exports__) {
+  ["ember","./among","./encode-uri-component","./encode-uri","./first-present","./fmt","./html-escape","./if-null","./not-among","./not-equal","./not-match","./promise","./safe-string","./join","./sum-by","./concat","./conditional","./product","exports"],
+  function(__dependency1__, __dependency2__, __dependency3__, __dependency4__, __dependency5__, __dependency6__, __dependency7__, __dependency8__, __dependency9__, __dependency10__, __dependency11__, __dependency12__, __dependency13__, __dependency14__, __dependency15__, __dependency16__, __dependency17__, __dependency18__, __exports__) {
     "use strict";
     var Ember = __dependency1__["default"] || __dependency1__;
     var among = __dependency2__["default"] || __dependency2__;
@@ -184,6 +184,7 @@ define("ember-cpm",
     var sumBy = __dependency15__["default"] || __dependency15__;
     var concat = __dependency16__["default"] || __dependency16__;
     var conditional = __dependency17__["default"] || __dependency17__;
+    var product = __dependency18__["default"] || __dependency18__;
 
     function reverseMerge(dest, source) {
       for (var key in source) {
@@ -210,7 +211,8 @@ define("ember-cpm",
       join: join,
       sumBy: sumBy,
       concat: concat,
-      conditional: conditional
+      conditional: conditional,
+      product: product
     };
     var install = function(){ reverseMerge(Ember.computed, Macros); };
 
@@ -450,6 +452,51 @@ define("ember-cpm/not-match",
 
         return typeof value === 'string' ? !value.match(regexp) : true;
       });
+    }
+  });
+define("ember-cpm/product",
+  ["ember","exports"],
+  function(__dependency1__, __exports__) {
+    "use strict";
+    var Ember = __dependency1__["default"] || __dependency1__;
+    /**
+    *  Returns the product of some numeric properties and numeric constants
+    *
+    *  Example: 6 * 7 * 2 = 84
+    *
+    *  Usage:
+    *    a: 6,
+    *    b: 7,
+    *    c: 2,
+    *    d: product('a', 'b', 'c'), // 84
+    *    e: product('a', 'b', 'c', 2) // 168
+    */
+
+
+    __exports__["default"] = function EmberCPM_product () {
+      var mainArguments = Array.prototype.slice.call(arguments), // all arguments
+        propertyArguments = mainArguments.reject( // dependent properties
+          function (x) {
+            return Ember.typeOf(x) !== 'string';
+          }
+        );
+
+      propertyArguments.push(function () {
+
+        if (Ember.isEmpty(mainArguments)) {
+          return null;
+        }
+
+        var prod = 1;
+        for (var i = 0; i < mainArguments.length; i += 1) {
+          // handle either constants or numeric properties.
+          // Assumption: all non-string arguments to the macro are numeric constants
+          prod *= Ember.typeOf(mainArguments[i]) === 'string' ? this.get(mainArguments[i]) : mainArguments[i];
+        }
+
+        return prod;
+      });
+      return Ember.computed.apply(this, propertyArguments);
     }
   });
 define("ember-cpm/promise",
