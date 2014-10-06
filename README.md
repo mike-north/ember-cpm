@@ -93,19 +93,24 @@ Person = Ember.Object.extend({
 `sum` and `product` have support for *composable* computed property macros. This allows developers to mix other macros together without defining a bunch of otherwise-useless intermediate properties
 
 ```javascript
+var product = EmberCPM.Macros.product,
+   sum = EmberCPM.Macros.sum,
+   mapBy = Ember.computed.mapBy,
+   sumArray = Ember.computed.sum;
+
 RestaurantCheck = Ember.Object.extend({
   items: [],
   taxPercent: 0.05,
   discount: 5.00,
 
-  itemPrices: EmberCPM.Macros.mapBy('items', 'price'),
-  subTotal: Ember.computed.sum('itemPrices'),
+  itemPrices: mapBy('items', 'price'),
+  subTotal: sumArray('itemPrices'), // sums over array
 
-  grandTotal: EmberCPM.Macros.sum(
-    EmberCPM.Macros.product('taxPercent', 'subTotal'), // tax
+  grandTotal: sum(
+    product('taxPercent', 'subTotal'), // tax
     'subTotal', // main bill
-    EmberCPM.Macros.product('subTotal', 0.17), // tip your waiter
-    EmberCPM.Macros.product(-1, 'discount') // discount
+    product('subTotal', 0.17), // tip your waiter
+    product(-1, 'discount') // discount
   )
 });
 
