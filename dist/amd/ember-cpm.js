@@ -1,28 +1,29 @@
 define(
-  ["ember","./among","./encode-uri-component","./encode-uri","./first-present","./fmt","./html-escape","./if-null","./not-among","./not-equal","./not-match","./promise","./safe-string","./join","./sum-by","./sum","./concat","./conditional","./product","./difference","./utils","exports"],
-  function(__dependency1__, __dependency2__, __dependency3__, __dependency4__, __dependency5__, __dependency6__, __dependency7__, __dependency8__, __dependency9__, __dependency10__, __dependency11__, __dependency12__, __dependency13__, __dependency14__, __dependency15__, __dependency16__, __dependency17__, __dependency18__, __dependency19__, __dependency20__, __dependency21__, __exports__) {
+  ["ember","./among","./all-equal","./encode-uri-component","./encode-uri","./first-present","./fmt","./html-escape","./if-null","./not-among","./not-equal","./not-match","./promise","./safe-string","./join","./sum-by","./sum","./concat","./conditional","./product","./difference","./utils","exports"],
+  function(__dependency1__, __dependency2__, __dependency3__, __dependency4__, __dependency5__, __dependency6__, __dependency7__, __dependency8__, __dependency9__, __dependency10__, __dependency11__, __dependency12__, __dependency13__, __dependency14__, __dependency15__, __dependency16__, __dependency17__, __dependency18__, __dependency19__, __dependency20__, __dependency21__, __dependency22__, __exports__) {
     "use strict";
     var Ember = __dependency1__["default"] || __dependency1__;
     var among = __dependency2__["default"] || __dependency2__;
-    var encodeURIComponent = __dependency3__["default"] || __dependency3__;
-    var encodeURI = __dependency4__["default"] || __dependency4__;
-    var firstPresent = __dependency5__["default"] || __dependency5__;
-    var fmt = __dependency6__["default"] || __dependency6__;
-    var htmlEscape = __dependency7__["default"] || __dependency7__;
-    var ifNull = __dependency8__["default"] || __dependency8__;
-    var notAmong = __dependency9__["default"] || __dependency9__;
-    var notEqual = __dependency10__["default"] || __dependency10__;
-    var notMatch = __dependency11__["default"] || __dependency11__;
-    var promise = __dependency12__["default"] || __dependency12__;
-    var safeString = __dependency13__["default"] || __dependency13__;
-    var join = __dependency14__["default"] || __dependency14__;
-    var sumBy = __dependency15__["default"] || __dependency15__;
-    var sum = __dependency16__["default"] || __dependency16__;
-    var concat = __dependency17__["default"] || __dependency17__;
-    var conditional = __dependency18__["default"] || __dependency18__;
-    var product = __dependency19__["default"] || __dependency19__;
-    var difference = __dependency20__["default"] || __dependency20__;
-    var _utils = __dependency21__["default"] || __dependency21__;
+    var allEqual = __dependency3__["default"] || __dependency3__;
+    var encodeURIComponent = __dependency4__["default"] || __dependency4__;
+    var encodeURI = __dependency5__["default"] || __dependency5__;
+    var firstPresent = __dependency6__["default"] || __dependency6__;
+    var fmt = __dependency7__["default"] || __dependency7__;
+    var htmlEscape = __dependency8__["default"] || __dependency8__;
+    var ifNull = __dependency9__["default"] || __dependency9__;
+    var notAmong = __dependency10__["default"] || __dependency10__;
+    var notEqual = __dependency11__["default"] || __dependency11__;
+    var notMatch = __dependency12__["default"] || __dependency12__;
+    var promise = __dependency13__["default"] || __dependency13__;
+    var safeString = __dependency14__["default"] || __dependency14__;
+    var join = __dependency15__["default"] || __dependency15__;
+    var sumBy = __dependency16__["default"] || __dependency16__;
+    var sum = __dependency17__["default"] || __dependency17__;
+    var concat = __dependency18__["default"] || __dependency18__;
+    var conditional = __dependency19__["default"] || __dependency19__;
+    var product = __dependency20__["default"] || __dependency20__;
+    var difference = __dependency21__["default"] || __dependency21__;
+    var _utils = __dependency22__["default"] || __dependency22__;
 
     function reverseMerge(dest, source) {
       for (var key in source) {
@@ -35,6 +36,7 @@ define(
     var VERSION = '1.1.3';
     var Macros = {
       among: among,
+      allEqual: allEqual,
       encodeURIComponent: encodeURIComponent,
       encodeURI: encodeURI,
       firstPresent: firstPresent,
