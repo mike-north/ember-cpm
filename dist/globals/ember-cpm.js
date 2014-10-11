@@ -1,7 +1,9 @@
 !function(e){if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.EmberCPM=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
+
 var among = _dereq_("./macros/among")["default"] || _dereq_("./macros/among");
+var allEqual = _dereq_("./macros/all-equal")["default"] || _dereq_("./macros/all-equal");
 var encodeURIComponent = _dereq_("./macros/encode-uri-component")["default"] || _dereq_("./macros/encode-uri-component");
 var encodeURI = _dereq_("./macros/encode-uri")["default"] || _dereq_("./macros/encode-uri");
 var firstPresent = _dereq_("./macros/first-present")["default"] || _dereq_("./macros/first-present");
@@ -33,6 +35,7 @@ function reverseMerge(dest, source) {
 var VERSION = '1.2.0';
 var Macros = {
   among: among,
+  allEqual: allEqual,
   encodeURIComponent: encodeURIComponent,
   encodeURI: encodeURI,
   firstPresent: firstPresent,
@@ -69,7 +72,37 @@ exports["default"] = {
   Macros: Macros,
   install: install
 };
-},{"./macros/among":2,"./macros/concat":3,"./macros/conditional":4,"./macros/difference":5,"./macros/encode-uri":7,"./macros/encode-uri-component":6,"./macros/first-present":8,"./macros/fmt":9,"./macros/html-escape":10,"./macros/if-null":11,"./macros/join":12,"./macros/not-among":13,"./macros/not-equal":14,"./macros/not-match":15,"./macros/product":16,"./macros/promise":17,"./macros/quotient":18,"./macros/safe-string":19,"./macros/sum":21,"./macros/sum-by":20}],2:[function(_dereq_,module,exports){
+},{"./macros/all-equal":2,"./macros/among":3,"./macros/concat":4,"./macros/conditional":5,"./macros/difference":6,"./macros/encode-uri":8,"./macros/encode-uri-component":7,"./macros/first-present":9,"./macros/fmt":10,"./macros/html-escape":11,"./macros/if-null":12,"./macros/join":13,"./macros/not-among":14,"./macros/not-equal":15,"./macros/not-match":16,"./macros/product":17,"./macros/promise":18,"./macros/quotient":19,"./macros/safe-string":20,"./macros/sum":22,"./macros/sum-by":21}],2:[function(_dereq_,module,exports){
+"use strict";
+
+var Ember = window.Ember["default"] || window.Ember;
+var retainByType = _dereq_("../utils").retainByType;
+var getVal = _dereq_("../utils").getVal;
+var getDependentPropertyKeys = _dereq_("../utils").getDependentPropertyKeys;
+
+exports["default"] = function EmberCPM_allEqual() {
+  var mainArguments = Array.prototype.slice.call(arguments), // all arguments
+    propertyArguments = getDependentPropertyKeys(mainArguments);
+
+  propertyArguments.push(function () {
+    switch (mainArguments.length) {
+      case 0:
+      case 1:
+        return true;
+      default:
+        var firstVal = getVal.call(this, mainArguments[0]);
+        for (var i = 1; i < mainArguments.length; i += 1) {
+          if (getVal.call(this, mainArguments[i]) !== firstVal) {
+            return false;
+          }
+        }
+        return true;
+    }
+  });
+
+  return Ember.computed.apply(this, propertyArguments);
+}
+},{"../utils":23}],3:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
 
@@ -91,7 +124,7 @@ exports["default"] = function EmberCPM_among(dependentKey) {
     return false;
   });
 }
-},{}],3:[function(_dereq_,module,exports){
+},{}],4:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
 
@@ -192,7 +225,7 @@ exports["default"] = function EmberCPM_concat() {
 
   return arrayComputed.apply(null, args);
 }
-},{}],4:[function(_dereq_,module,exports){
+},{}],5:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
 /**
@@ -226,7 +259,7 @@ exports["default"] = function EmberCPM_conditional(condition, valIfTrue, valIfFa
 
   return Ember.computed.apply(this, propertyArguments);
 }
-},{}],5:[function(_dereq_,module,exports){
+},{}],6:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
 var getVal = _dereq_("../utils").getVal;
@@ -249,7 +282,7 @@ exports["default"] = function EmberCPM_difference() {
 
   return Ember.computed.apply(this, propertyArguments);
 }
-},{"../utils":22}],6:[function(_dereq_,module,exports){
+},{"../utils":23}],7:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
 
@@ -265,7 +298,7 @@ exports["default"] = function EmberCPM_encodeURIComponent(dependentKey) {
     return encodeURIComponent(value);
   });
 }
-},{}],7:[function(_dereq_,module,exports){
+},{}],8:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
 
@@ -281,7 +314,7 @@ exports["default"] = function EmberCPM_encodeURI(dependentKey) {
     return encodeURI(value);
   });
 }
-},{}],8:[function(_dereq_,module,exports){
+},{}],9:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
 
@@ -317,7 +350,7 @@ exports["default"] = function EmberCPM_firstPresent() {
 
   return computed.apply(this, computedArgs);
 }
-},{}],9:[function(_dereq_,module,exports){
+},{}],10:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
 
@@ -348,7 +381,7 @@ exports["default"] = function EmberCPM_fmt() {
   return computed.apply(this, propertyArguments);
 
 }
-},{}],10:[function(_dereq_,module,exports){
+},{}],11:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
 
@@ -369,7 +402,7 @@ exports["default"] = function EmberCPM_htmlEscape(dependentKey) {
   });
 
 }
-},{}],11:[function(_dereq_,module,exports){
+},{}],12:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
 
@@ -383,7 +416,7 @@ exports["default"] = function EmberCPM_ifNull(dependentKey, defaultValue) {
     return value == null ? defaultValue : value;
   });
 }
-},{}],12:[function(_dereq_,module,exports){
+},{}],13:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
 
@@ -404,7 +437,7 @@ exports["default"] = function EmberCPM_join() {
 
   return cp.property.apply(cp, properties);
 }
-},{}],13:[function(_dereq_,module,exports){
+},{}],14:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
 
@@ -426,7 +459,7 @@ exports["default"] = function EmberCPM_notAmong(dependentKey) {
     return true;
   });
 }
-},{}],14:[function(_dereq_,module,exports){
+},{}],15:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
 
@@ -438,7 +471,7 @@ exports["default"] = function EmberCPM_notEqual(dependentKey, targetValue) {
     return get(this, dependentKey) !== targetValue;
   });
 }
-},{}],15:[function(_dereq_,module,exports){
+},{}],16:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
 
@@ -452,7 +485,7 @@ exports["default"] = function EmberCPM_notMatch(dependentKey, regexp) {
     return typeof value === 'string' ? !value.match(regexp) : true;
   });
 }
-},{}],16:[function(_dereq_,module,exports){
+},{}],17:[function(_dereq_,module,exports){
 "use strict";
 var reduceComputedPropertyMacro = _dereq_("../utils").reduceComputedPropertyMacro;
 
@@ -474,7 +507,7 @@ exports["default"] = reduceComputedPropertyMacro(
     return prev * item;
   }
 );
-},{"../utils":22}],17:[function(_dereq_,module,exports){
+},{"../utils":23}],18:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
 
@@ -489,7 +522,7 @@ exports["default"] = function EmberCPM_promise(dependentKey) {
     return Ember.$.when(value);
   });
 }
-},{}],18:[function(_dereq_,module,exports){
+},{}],19:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
 var getVal = _dereq_("../utils").getVal;
@@ -512,7 +545,7 @@ exports["default"] = function EmberCPM_quotient() {
 
   return Ember.computed.apply(this, propertyArguments);
 }
-},{"../utils":22}],19:[function(_dereq_,module,exports){
+},{"../utils":23}],20:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
 
@@ -529,7 +562,7 @@ exports["default"] = function EmberCPM_safeString(dependentKey) {
   });
 
 }
-},{}],20:[function(_dereq_,module,exports){
+},{}],21:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
 
@@ -549,7 +582,7 @@ exports["default"] = function EmberCPM_sumBy(dependentKey, propertyKey) {
     }
   });
 }
-},{}],21:[function(_dereq_,module,exports){
+},{}],22:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
 var reduceComputedPropertyMacro = _dereq_("../utils").reduceComputedPropertyMacro;
@@ -590,7 +623,7 @@ var EmberCPM_sum = reduceComputedPropertyMacro(
 );
 
 exports["default"] = EmberCPM_sum;
-},{"../utils":22}],22:[function(_dereq_,module,exports){
+},{"../utils":23}],23:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
 
@@ -615,7 +648,8 @@ function retainByType(arr, type) {
   );
 }
 
-exports.retainByType = retainByType;function getDependentPropertyKeys(argumentArr) {
+exports.retainByType = retainByType;
+function getDependentPropertyKeys(argumentArr) {
   return argumentArr.reduce(
     function (prev, item) {
       switch (Ember.typeOf(item)) {

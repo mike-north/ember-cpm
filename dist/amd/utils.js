@@ -25,7 +25,8 @@ define(
       );
     }
 
-    __exports__.retainByType = retainByType;function getDependentPropertyKeys(argumentArr) {
+    __exports__.retainByType = retainByType;
+    function getDependentPropertyKeys(argumentArr) {
       return argumentArr.reduce(
         function (prev, item) {
           switch (Ember.typeOf(item)) {

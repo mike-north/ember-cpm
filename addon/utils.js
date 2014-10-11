@@ -21,6 +21,7 @@ export function retainByType(arr, type) {
   );
 }
 
+
 export function getDependentPropertyKeys(argumentArr) {
   return argumentArr.reduce(
     function (prev, item) {
