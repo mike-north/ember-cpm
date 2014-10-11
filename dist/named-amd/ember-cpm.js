@@ -1,5 +1,80 @@
-define("ember-cpm/all-equal",
-  ["ember","./utils","exports"],
+define("ember-cpm",
+  ["ember","./macros/among","./macros/all-equal","./macros/encode-uri-component","./macros/encode-uri","./macros/first-present","./macros/fmt","./macros/html-escape","./macros/if-null","./macros/not-among","./macros/not-equal","./macros/not-match","./macros/promise","./macros/safe-string","./macros/join","./macros/sum-by","./macros/sum","./macros/concat","./macros/conditional","./macros/product","./macros/difference","exports"],
+  function(__dependency1__, __dependency2__, __dependency3__, __dependency4__, __dependency5__, __dependency6__, __dependency7__, __dependency8__, __dependency9__, __dependency10__, __dependency11__, __dependency12__, __dependency13__, __dependency14__, __dependency15__, __dependency16__, __dependency17__, __dependency18__, __dependency19__, __dependency20__, __dependency21__, __exports__) {
+    "use strict";
+    var Ember = __dependency1__["default"] || __dependency1__;
+
+    var among = __dependency2__["default"] || __dependency2__;
+    var allEqual = __dependency3__["default"] || __dependency3__;
+    var encodeURIComponent = __dependency4__["default"] || __dependency4__;
+    var encodeURI = __dependency5__["default"] || __dependency5__;
+    var firstPresent = __dependency6__["default"] || __dependency6__;
+    var fmt = __dependency7__["default"] || __dependency7__;
+    var htmlEscape = __dependency8__["default"] || __dependency8__;
+    var ifNull = __dependency9__["default"] || __dependency9__;
+    var notAmong = __dependency10__["default"] || __dependency10__;
+    var notEqual = __dependency11__["default"] || __dependency11__;
+    var notMatch = __dependency12__["default"] || __dependency12__;
+    var promise = __dependency13__["default"] || __dependency13__;
+    var safeString = __dependency14__["default"] || __dependency14__;
+    var join = __dependency15__["default"] || __dependency15__;
+    var sumBy = __dependency16__["default"] || __dependency16__;
+    var sum = __dependency17__["default"] || __dependency17__;
+    var concat = __dependency18__["default"] || __dependency18__;
+    var conditional = __dependency19__["default"] || __dependency19__;
+    var product = __dependency20__["default"] || __dependency20__;
+    var difference = __dependency21__["default"] || __dependency21__;
+
+    function reverseMerge(dest, source) {
+      for (var key in source) {
+        if (source.hasOwnProperty(key) && !dest.hasOwnProperty(key)) {
+          dest[key] = source[key];
+        }
+      }
+    }
+
+    var VERSION = '1.2.0';
+    var Macros = {
+      among: among,
+      allEqual: allEqual,
+      encodeURIComponent: encodeURIComponent,
+      encodeURI: encodeURI,
+      firstPresent: firstPresent,
+      fmt: fmt,
+      htmlEscape: htmlEscape,
+      ifNull: ifNull,
+      notAmong: notAmong,
+      notEqual: notEqual,
+      notMatch: notMatch,
+      promise: promise,
+      safeString: safeString,
+      join: join,
+      sumBy: sumBy,
+      sum: sum,
+      difference: difference,
+      concat: concat,
+      conditional: conditional,
+      product: product
+    };
+    var install = function(){ reverseMerge(Ember.computed, Macros); };
+
+
+    if (Ember.libraries) {
+      Ember.libraries.register('Ember-CPM', VERSION);
+    }
+
+    __exports__.VERSION = VERSION;
+    __exports__.Macros = Macros;
+    __exports__.install = install;
+
+    __exports__["default"] = {
+      VERSION: VERSION,
+      Macros: Macros,
+      install: install
+    };
+  });
+define("ember-cpm/macros/all-equal",
+  ["ember","../utils","exports"],
   function(__dependency1__, __dependency2__, __exports__) {
     "use strict";
 
@@ -31,7 +106,7 @@ define("ember-cpm/all-equal",
       return Ember.computed.apply(this, propertyArguments);
     }
   });
-define("ember-cpm/among",
+define("ember-cpm/macros/among",
   ["ember","exports"],
   function(__dependency1__, __exports__) {
     "use strict";
@@ -48,20 +123,21 @@ define("ember-cpm/among",
           i;
 
         for (i = 0; i < properties.length; ++i) {
-          if (properties[i] === value) return true;
+          if (properties[i] === value) {
+            return true;
+          }
         }
         return false;
       });
     }
   });
-define("ember-cpm/concat",
+define("ember-cpm/macros/concat",
   ["ember","exports"],
   function(__dependency1__, __exports__) {
     "use strict";
     var Ember = __dependency1__["default"] || __dependency1__;
 
     var get = Ember.get;
-    var computed = Ember.computed;
     var guidFor = Ember.guidFor;
     var arrayComputed = Ember.arrayComputed;
 
@@ -159,7 +235,7 @@ define("ember-cpm/concat",
       return arrayComputed.apply(null, args);
     }
   });
-define("ember-cpm/conditional",
+define("ember-cpm/macros/conditional",
   ["ember","exports"],
   function(__dependency1__, __exports__) {
     "use strict";
@@ -184,10 +260,10 @@ define("ember-cpm/conditional",
      */
 
     __exports__["default"] = function EmberCPM_conditional(condition, valIfTrue, valIfFalse) {
-      var isConditionComputed = Ember.Descriptor === condition.constructor,
-        propertyArguments = isConditionComputed ? condition._dependentKeys.slice(0) : [condition];
+      var isConditionComputed = Ember.Descriptor === condition.constructor;
+      var propertyArguments = isConditionComputed ? condition._dependentKeys.slice(0) : [condition];
 
-      propertyArguments.push(function (key, value, oldValue) {
+      propertyArguments.push(function(/* key, value, oldValue */) {
         var conditionEvaluation = isConditionComputed ? condition.func.apply(this, arguments) : this.get(condition);
 
         return conditionEvaluation ? valIfTrue : valIfFalse;
@@ -196,18 +272,17 @@ define("ember-cpm/conditional",
       return Ember.computed.apply(this, propertyArguments);
     }
   });
-define("ember-cpm/difference",
-  ["ember","./utils","exports"],
+define("ember-cpm/macros/difference",
+  ["ember","../utils","exports"],
   function(__dependency1__, __dependency2__, __exports__) {
     "use strict";
     var Ember = __dependency1__["default"] || __dependency1__;
-    var retainByType = __dependency2__.retainByType;
     var getVal = __dependency2__.getVal;
     var getDependentPropertyKeys = __dependency2__.getDependentPropertyKeys;
 
     __exports__["default"] = function EmberCPM_difference() {
-      var mainArguments = Array.prototype.slice.call(arguments), // all arguments
-        propertyArguments = getDependentPropertyKeys(mainArguments);
+      var mainArguments = Array.prototype.slice.call(arguments);
+      var propertyArguments = getDependentPropertyKeys(mainArguments);
 
       propertyArguments.push(function () {
         switch (mainArguments.length) {
@@ -223,82 +298,7 @@ define("ember-cpm/difference",
       return Ember.computed.apply(this, propertyArguments);
     }
   });
-define("ember-cpm",
-  ["ember","./among","./all-equal","./encode-uri-component","./encode-uri","./first-present","./fmt","./html-escape","./if-null","./not-among","./not-equal","./not-match","./promise","./safe-string","./join","./sum-by","./sum","./concat","./conditional","./product","./difference","./utils","exports"],
-  function(__dependency1__, __dependency2__, __dependency3__, __dependency4__, __dependency5__, __dependency6__, __dependency7__, __dependency8__, __dependency9__, __dependency10__, __dependency11__, __dependency12__, __dependency13__, __dependency14__, __dependency15__, __dependency16__, __dependency17__, __dependency18__, __dependency19__, __dependency20__, __dependency21__, __dependency22__, __exports__) {
-    "use strict";
-    var Ember = __dependency1__["default"] || __dependency1__;
-    var among = __dependency2__["default"] || __dependency2__;
-    var allEqual = __dependency3__["default"] || __dependency3__;
-    var encodeURIComponent = __dependency4__["default"] || __dependency4__;
-    var encodeURI = __dependency5__["default"] || __dependency5__;
-    var firstPresent = __dependency6__["default"] || __dependency6__;
-    var fmt = __dependency7__["default"] || __dependency7__;
-    var htmlEscape = __dependency8__["default"] || __dependency8__;
-    var ifNull = __dependency9__["default"] || __dependency9__;
-    var notAmong = __dependency10__["default"] || __dependency10__;
-    var notEqual = __dependency11__["default"] || __dependency11__;
-    var notMatch = __dependency12__["default"] || __dependency12__;
-    var promise = __dependency13__["default"] || __dependency13__;
-    var safeString = __dependency14__["default"] || __dependency14__;
-    var join = __dependency15__["default"] || __dependency15__;
-    var sumBy = __dependency16__["default"] || __dependency16__;
-    var sum = __dependency17__["default"] || __dependency17__;
-    var concat = __dependency18__["default"] || __dependency18__;
-    var conditional = __dependency19__["default"] || __dependency19__;
-    var product = __dependency20__["default"] || __dependency20__;
-    var difference = __dependency21__["default"] || __dependency21__;
-    var _utils = __dependency22__["default"] || __dependency22__;
-
-    function reverseMerge(dest, source) {
-      for (var key in source) {
-        if (source.hasOwnProperty(key) && !dest.hasOwnProperty(key)) {
-          dest[key] = source[key];
-        }
-      }
-    }
-
-    var VERSION = '1.1.3';
-    var Macros = {
-      among: among,
-      allEqual: allEqual,
-      encodeURIComponent: encodeURIComponent,
-      encodeURI: encodeURI,
-      firstPresent: firstPresent,
-      fmt: fmt,
-      htmlEscape: htmlEscape,
-      ifNull: ifNull,
-      notAmong: notAmong,
-      notEqual: notEqual,
-      notMatch: notMatch,
-      promise: promise,
-      safeString: safeString,
-      join: join,
-      sumBy: sumBy,
-      sum: sum,
-      difference: difference,
-      concat: concat,
-      conditional: conditional,
-      product: product
-    };
-    var install = function(){ reverseMerge(Ember.computed, Macros); };
-
-
-    if (Ember.libraries)
-      Ember.libraries.register('Ember-CPM', VERSION);
-
-    __exports__.VERSION = VERSION;
-    __exports__.Macros = Macros;
-    __exports__.install = install;
-    __exports__._utils = _utils;
-
-    __exports__["default"] = {
-      VERSION: VERSION,
-      Macros: Macros,
-      install: install
-    };
-  });
-define("ember-cpm/encode-uri-component",
+define("ember-cpm/macros/encode-uri-component",
   ["ember","exports"],
   function(__dependency1__, __exports__) {
     "use strict";
@@ -310,12 +310,14 @@ define("ember-cpm/encode-uri-component",
     __exports__["default"] = function EmberCPM_encodeURIComponent(dependentKey) {
       return computed(dependentKey, function(){
         var value = get(this, dependentKey);
-        if (value == null) return value;
+        if (value == null) {
+          return value;
+        }
         return encodeURIComponent(value);
       });
     }
   });
-define("ember-cpm/encode-uri",
+define("ember-cpm/macros/encode-uri",
   ["ember","exports"],
   function(__dependency1__, __exports__) {
     "use strict";
@@ -327,12 +329,14 @@ define("ember-cpm/encode-uri",
     __exports__["default"] = function EmberCPM_encodeURI(dependentKey) {
       return computed(dependentKey, function(){
         var value = get(this, dependentKey);
-        if (value == null) return value;
+        if (value == null) {
+          return value;
+        }
         return encodeURI(value);
       });
     }
   });
-define("ember-cpm/first-present",
+define("ember-cpm/macros/first-present",
   ["ember","exports"],
   function(__dependency1__, __exports__) {
     "use strict";
@@ -340,9 +344,7 @@ define("ember-cpm/first-present",
 
     var get = Ember.get;
     var computed = Ember.computed;
-    var A = Ember.A;
     var isBlank = Ember.isBlank;
-    var isEmpty = Ember.isEmpty;
 
     var a_slice = Array.prototype.slice;
 
@@ -363,7 +365,7 @@ define("ember-cpm/first-present",
 
       computedArgs.push(function() {
         var that = this;
-        var property = A(properties).find(function(key) {
+        var property = Ember.A(properties).find(function(key) {
           return isPresent(get(that, key));
         });
 
@@ -373,7 +375,7 @@ define("ember-cpm/first-present",
       return computed.apply(this, computedArgs);
     }
   });
-define("ember-cpm/fmt",
+define("ember-cpm/macros/fmt",
   ["ember","exports"],
   function(__dependency1__, __exports__) {
     "use strict";
@@ -403,7 +405,7 @@ define("ember-cpm/fmt",
       });
     }
   });
-define("ember-cpm/html-escape",
+define("ember-cpm/macros/html-escape",
   ["ember","exports"],
   function(__dependency1__, __exports__) {
     "use strict";
@@ -417,7 +419,9 @@ define("ember-cpm/html-escape",
       return computed(dependentKey, function(){
         var value = get(this, dependentKey);
 
-        if (value == null) return value;
+        if (value == null) {
+          return value;
+        }
 
         var escapedExpression = EmberHandlebars.Utils.escapeExpression(value);
         return new EmberHandlebars.SafeString(escapedExpression);
@@ -425,7 +429,7 @@ define("ember-cpm/html-escape",
 
     }
   });
-define("ember-cpm/if-null",
+define("ember-cpm/macros/if-null",
   ["ember","exports"],
   function(__dependency1__, __exports__) {
     "use strict";
@@ -442,7 +446,7 @@ define("ember-cpm/if-null",
       });
     }
   });
-define("ember-cpm/join",
+define("ember-cpm/macros/join",
   ["ember","exports"],
   function(__dependency1__, __exports__) {
     "use strict";
@@ -466,7 +470,7 @@ define("ember-cpm/join",
       return cp.property.apply(cp, properties);
     }
   });
-define("ember-cpm/not-among",
+define("ember-cpm/macros/not-among",
   ["ember","exports"],
   function(__dependency1__, __exports__) {
     "use strict";
@@ -479,18 +483,19 @@ define("ember-cpm/not-among",
       var properties = Array.prototype.slice.call(arguments, 1);
 
       return computed(dependentKey, function(){
-        var value = get(this, dependentKey),
-          i;
+        var value = get(this, dependentKey);
 
-        for (i = 0; i < properties.length; ++i) {
-          if (properties[i] === value) return false;
+        for (var i = 0, l = properties.length; i < l; ++i) {
+          if (properties[i] === value) {
+            return false;
+          }
         }
 
         return true;
       });
     }
   });
-define("ember-cpm/not-equal",
+define("ember-cpm/macros/not-equal",
   ["ember","exports"],
   function(__dependency1__, __exports__) {
     "use strict";
@@ -505,7 +510,7 @@ define("ember-cpm/not-equal",
       });
     }
   });
-define("ember-cpm/not-match",
+define("ember-cpm/macros/not-match",
   ["ember","exports"],
   function(__dependency1__, __exports__) {
     "use strict";
@@ -522,12 +527,11 @@ define("ember-cpm/not-match",
       });
     }
   });
-define("ember-cpm/product",
-  ["ember","./utils","exports"],
-  function(__dependency1__, __dependency2__, __exports__) {
+define("ember-cpm/macros/product",
+  ["../utils","exports"],
+  function(__dependency1__, __exports__) {
     "use strict";
-    var Ember = __dependency1__["default"] || __dependency1__;
-    var reduceComputedPropertyMacro = __dependency2__.reduceComputedPropertyMacro;
+    var reduceComputedPropertyMacro = __dependency1__.reduceComputedPropertyMacro;
 
     /**
     *  Returns the product of some numeric properties and numeric constants
@@ -542,15 +546,13 @@ define("ember-cpm/product",
     *    e: product('a', 'b', 'c', 2) // 168
     */
 
-    var EmberCPM_product = reduceComputedPropertyMacro(
+    __exports__["default"] = reduceComputedPropertyMacro(
       function (prev, item) {
         return prev * item;
       }
     );
-
-    __exports__["default"] = EmberCPM_product;
   });
-define("ember-cpm/promise",
+define("ember-cpm/macros/promise",
   ["ember","exports"],
   function(__dependency1__, __exports__) {
     "use strict";
@@ -558,18 +560,17 @@ define("ember-cpm/promise",
 
     var get = Ember.get;
     var computed = Ember.computed;
-    var $ = Ember.$;
 
     // TODO: Use RSVP?
     __exports__["default"] = function EmberCPM_promise(dependentKey) {
       return computed(dependentKey, function(){
         var value = get(this, dependentKey);
         if (value == null) { return value; }
-        return $.when(value);
+        return Ember.$.when(value);
       });
     }
   });
-define("ember-cpm/safe-string",
+define("ember-cpm/macros/safe-string",
   ["ember","exports"],
   function(__dependency1__, __exports__) {
     "use strict";
@@ -589,7 +590,7 @@ define("ember-cpm/safe-string",
 
     }
   });
-define("ember-cpm/sum-by",
+define("ember-cpm/macros/sum-by",
   ["ember","exports"],
   function(__dependency1__, __exports__) {
     "use strict";
@@ -602,18 +603,18 @@ define("ember-cpm/sum-by",
       return reduceComputed(dependentKey + '.@each.' + propertyKey, {
         initialValue: 0.0,
 
-        addedItem: function(accumulatedValue, item, changeMeta, instanceMeta){
+        addedItem: function(accumulatedValue, item /*, changeMeta, instanceMeta */){
           return accumulatedValue + parseFloat(get(item, propertyKey));
         },
 
-        removedItem: function(accumulatedValue, item, changeMeta, instanceMeta){
+        removedItem: function(accumulatedValue, item /*, changeMeta, instanceMeta */){
           return accumulatedValue - parseFloat(get(item, propertyKey));
         }
       });
     }
   });
-define("ember-cpm/sum",
-  ["ember","./utils","exports"],
+define("ember-cpm/macros/sum",
+  ["ember","../utils","exports"],
   function(__dependency1__, __dependency2__, __exports__) {
     "use strict";
     var Ember = __dependency1__["default"] || __dependency1__;
@@ -657,9 +658,11 @@ define("ember-cpm/sum",
     __exports__["default"] = EmberCPM_sum;
   });
 define("ember-cpm/utils",
-  ["exports"],
-  function(__exports__) {
+  ["ember","exports"],
+  function(__dependency1__, __exports__) {
     "use strict";
+    var Ember = __dependency1__["default"] || __dependency1__;
+
     /**
      * Retain items in an array based on type
      * @param {array} arr  array to iterate over
@@ -683,7 +686,6 @@ define("ember-cpm/utils",
 
     __exports__.retainByType = retainByType;
     function getDependentPropertyKeys(argumentArr) {
-
       return argumentArr.reduce(
         function (prev, item) {
           switch (Ember.typeOf(item)) {
@@ -735,8 +737,8 @@ define("ember-cpm/utils",
      * @param {[type]} reducingFunction [description]
      */
     function reduceComputedPropertyMacro(reducingFunction, options) {
-      var opts = options || {},
-        singleItemCallback = opts.singleItemCallback || function (item) {return getVal.call(this,item);};
+      var opts = options || {};
+      var singleItemCallback = opts.singleItemCallback || function (item) {return getVal.call(this,item);};
 
       return function () {
         var mainArguments = Array.prototype.slice.call(arguments), // all arguments

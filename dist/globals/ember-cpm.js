@@ -1,10 +1,82 @@
 !function(e){if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.EmberCPM=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
 "use strict";
+var Ember = window.Ember["default"] || window.Ember;
+
+var among = _dereq_("./macros/among")["default"] || _dereq_("./macros/among");
+var allEqual = _dereq_("./macros/all-equal")["default"] || _dereq_("./macros/all-equal");
+var encodeURIComponent = _dereq_("./macros/encode-uri-component")["default"] || _dereq_("./macros/encode-uri-component");
+var encodeURI = _dereq_("./macros/encode-uri")["default"] || _dereq_("./macros/encode-uri");
+var firstPresent = _dereq_("./macros/first-present")["default"] || _dereq_("./macros/first-present");
+var fmt = _dereq_("./macros/fmt")["default"] || _dereq_("./macros/fmt");
+var htmlEscape = _dereq_("./macros/html-escape")["default"] || _dereq_("./macros/html-escape");
+var ifNull = _dereq_("./macros/if-null")["default"] || _dereq_("./macros/if-null");
+var notAmong = _dereq_("./macros/not-among")["default"] || _dereq_("./macros/not-among");
+var notEqual = _dereq_("./macros/not-equal")["default"] || _dereq_("./macros/not-equal");
+var notMatch = _dereq_("./macros/not-match")["default"] || _dereq_("./macros/not-match");
+var promise = _dereq_("./macros/promise")["default"] || _dereq_("./macros/promise");
+var safeString = _dereq_("./macros/safe-string")["default"] || _dereq_("./macros/safe-string");
+var join = _dereq_("./macros/join")["default"] || _dereq_("./macros/join");
+var sumBy = _dereq_("./macros/sum-by")["default"] || _dereq_("./macros/sum-by");
+var sum = _dereq_("./macros/sum")["default"] || _dereq_("./macros/sum");
+var concat = _dereq_("./macros/concat")["default"] || _dereq_("./macros/concat");
+var conditional = _dereq_("./macros/conditional")["default"] || _dereq_("./macros/conditional");
+var product = _dereq_("./macros/product")["default"] || _dereq_("./macros/product");
+var difference = _dereq_("./macros/difference")["default"] || _dereq_("./macros/difference");
+
+function reverseMerge(dest, source) {
+  for (var key in source) {
+    if (source.hasOwnProperty(key) && !dest.hasOwnProperty(key)) {
+      dest[key] = source[key];
+    }
+  }
+}
+
+var VERSION = '1.2.0';
+var Macros = {
+  among: among,
+  allEqual: allEqual,
+  encodeURIComponent: encodeURIComponent,
+  encodeURI: encodeURI,
+  firstPresent: firstPresent,
+  fmt: fmt,
+  htmlEscape: htmlEscape,
+  ifNull: ifNull,
+  notAmong: notAmong,
+  notEqual: notEqual,
+  notMatch: notMatch,
+  promise: promise,
+  safeString: safeString,
+  join: join,
+  sumBy: sumBy,
+  sum: sum,
+  difference: difference,
+  concat: concat,
+  conditional: conditional,
+  product: product
+};
+var install = function(){ reverseMerge(Ember.computed, Macros); };
+
+
+if (Ember.libraries) {
+  Ember.libraries.register('Ember-CPM', VERSION);
+}
+
+exports.VERSION = VERSION;
+exports.Macros = Macros;
+exports.install = install;
+
+exports["default"] = {
+  VERSION: VERSION,
+  Macros: Macros,
+  install: install
+};
+},{"./macros/all-equal":2,"./macros/among":3,"./macros/concat":4,"./macros/conditional":5,"./macros/difference":6,"./macros/encode-uri":8,"./macros/encode-uri-component":7,"./macros/first-present":9,"./macros/fmt":10,"./macros/html-escape":11,"./macros/if-null":12,"./macros/join":13,"./macros/not-among":14,"./macros/not-equal":15,"./macros/not-match":16,"./macros/product":17,"./macros/promise":18,"./macros/safe-string":19,"./macros/sum":21,"./macros/sum-by":20}],2:[function(_dereq_,module,exports){
+"use strict";
 
 var Ember = window.Ember["default"] || window.Ember;
-var retainByType = _dereq_("./utils").retainByType;
-var getVal = _dereq_("./utils").getVal;
-var getDependentPropertyKeys = _dereq_("./utils").getDependentPropertyKeys;
+var retainByType = _dereq_("../utils").retainByType;
+var getVal = _dereq_("../utils").getVal;
+var getDependentPropertyKeys = _dereq_("../utils").getDependentPropertyKeys;
 
 exports["default"] = function EmberCPM_allEqual() {
   var mainArguments = Array.prototype.slice.call(arguments), // all arguments
@@ -28,7 +100,7 @@ exports["default"] = function EmberCPM_allEqual() {
 
   return Ember.computed.apply(this, propertyArguments);
 }
-},{"./utils":22}],2:[function(_dereq_,module,exports){
+},{"../utils":22}],3:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
 
@@ -43,17 +115,18 @@ exports["default"] = function EmberCPM_among(dependentKey) {
       i;
 
     for (i = 0; i < properties.length; ++i) {
-      if (properties[i] === value) return true;
+      if (properties[i] === value) {
+        return true;
+      }
     }
     return false;
   });
 }
-},{}],3:[function(_dereq_,module,exports){
+},{}],4:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
 
 var get = Ember.get;
-var computed = Ember.computed;
 var guidFor = Ember.guidFor;
 var arrayComputed = Ember.arrayComputed;
 
@@ -150,7 +223,7 @@ exports["default"] = function EmberCPM_concat() {
 
   return arrayComputed.apply(null, args);
 }
-},{}],4:[function(_dereq_,module,exports){
+},{}],5:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
 /**
@@ -173,10 +246,10 @@ var Ember = window.Ember["default"] || window.Ember;
  */
 
 exports["default"] = function EmberCPM_conditional(condition, valIfTrue, valIfFalse) {
-  var isConditionComputed = Ember.Descriptor === condition.constructor,
-    propertyArguments = isConditionComputed ? condition._dependentKeys.slice(0) : [condition];
+  var isConditionComputed = Ember.Descriptor === condition.constructor;
+  var propertyArguments = isConditionComputed ? condition._dependentKeys.slice(0) : [condition];
 
-  propertyArguments.push(function (key, value, oldValue) {
+  propertyArguments.push(function(/* key, value, oldValue */) {
     var conditionEvaluation = isConditionComputed ? condition.func.apply(this, arguments) : this.get(condition);
 
     return conditionEvaluation ? valIfTrue : valIfFalse;
@@ -184,16 +257,15 @@ exports["default"] = function EmberCPM_conditional(condition, valIfTrue, valIfFa
 
   return Ember.computed.apply(this, propertyArguments);
 }
-},{}],5:[function(_dereq_,module,exports){
+},{}],6:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
-var retainByType = _dereq_("./utils").retainByType;
-var getVal = _dereq_("./utils").getVal;
-var getDependentPropertyKeys = _dereq_("./utils").getDependentPropertyKeys;
+var getVal = _dereq_("../utils").getVal;
+var getDependentPropertyKeys = _dereq_("../utils").getDependentPropertyKeys;
 
 exports["default"] = function EmberCPM_difference() {
-  var mainArguments = Array.prototype.slice.call(arguments), // all arguments
-    propertyArguments = getDependentPropertyKeys(mainArguments);
+  var mainArguments = Array.prototype.slice.call(arguments);
+  var propertyArguments = getDependentPropertyKeys(mainArguments);
 
   propertyArguments.push(function () {
     switch (mainArguments.length) {
@@ -208,79 +280,7 @@ exports["default"] = function EmberCPM_difference() {
 
   return Ember.computed.apply(this, propertyArguments);
 }
-},{"./utils":22}],6:[function(_dereq_,module,exports){
-"use strict";
-var Ember = window.Ember["default"] || window.Ember;
-var among = _dereq_("./among")["default"] || _dereq_("./among");
-var allEqual = _dereq_("./all-equal")["default"] || _dereq_("./all-equal");
-var encodeURIComponent = _dereq_("./encode-uri-component")["default"] || _dereq_("./encode-uri-component");
-var encodeURI = _dereq_("./encode-uri")["default"] || _dereq_("./encode-uri");
-var firstPresent = _dereq_("./first-present")["default"] || _dereq_("./first-present");
-var fmt = _dereq_("./fmt")["default"] || _dereq_("./fmt");
-var htmlEscape = _dereq_("./html-escape")["default"] || _dereq_("./html-escape");
-var ifNull = _dereq_("./if-null")["default"] || _dereq_("./if-null");
-var notAmong = _dereq_("./not-among")["default"] || _dereq_("./not-among");
-var notEqual = _dereq_("./not-equal")["default"] || _dereq_("./not-equal");
-var notMatch = _dereq_("./not-match")["default"] || _dereq_("./not-match");
-var promise = _dereq_("./promise")["default"] || _dereq_("./promise");
-var safeString = _dereq_("./safe-string")["default"] || _dereq_("./safe-string");
-var join = _dereq_("./join")["default"] || _dereq_("./join");
-var sumBy = _dereq_("./sum-by")["default"] || _dereq_("./sum-by");
-var sum = _dereq_("./sum")["default"] || _dereq_("./sum");
-var concat = _dereq_("./concat")["default"] || _dereq_("./concat");
-var conditional = _dereq_("./conditional")["default"] || _dereq_("./conditional");
-var product = _dereq_("./product")["default"] || _dereq_("./product");
-var difference = _dereq_("./difference")["default"] || _dereq_("./difference");
-var _utils = _dereq_("./utils")["default"] || _dereq_("./utils");
-
-function reverseMerge(dest, source) {
-  for (var key in source) {
-    if (source.hasOwnProperty(key) && !dest.hasOwnProperty(key)) {
-      dest[key] = source[key];
-    }
-  }
-}
-
-var VERSION = '1.1.3';
-var Macros = {
-  among: among,
-  allEqual: allEqual,
-  encodeURIComponent: encodeURIComponent,
-  encodeURI: encodeURI,
-  firstPresent: firstPresent,
-  fmt: fmt,
-  htmlEscape: htmlEscape,
-  ifNull: ifNull,
-  notAmong: notAmong,
-  notEqual: notEqual,
-  notMatch: notMatch,
-  promise: promise,
-  safeString: safeString,
-  join: join,
-  sumBy: sumBy,
-  sum: sum,
-  difference: difference,
-  concat: concat,
-  conditional: conditional,
-  product: product
-};
-var install = function(){ reverseMerge(Ember.computed, Macros); };
-
-
-if (Ember.libraries)
-  Ember.libraries.register('Ember-CPM', VERSION);
-
-exports.VERSION = VERSION;
-exports.Macros = Macros;
-exports.install = install;
-exports._utils = _utils;
-
-exports["default"] = {
-  VERSION: VERSION,
-  Macros: Macros,
-  install: install
-};
-},{"./all-equal":1,"./among":2,"./concat":3,"./conditional":4,"./difference":5,"./encode-uri":8,"./encode-uri-component":7,"./first-present":9,"./fmt":10,"./html-escape":11,"./if-null":12,"./join":13,"./not-among":14,"./not-equal":15,"./not-match":16,"./product":17,"./promise":18,"./safe-string":19,"./sum":21,"./sum-by":20,"./utils":22}],7:[function(_dereq_,module,exports){
+},{"../utils":22}],7:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
 
@@ -290,7 +290,9 @@ var computed = Ember.computed;
 exports["default"] = function EmberCPM_encodeURIComponent(dependentKey) {
   return computed(dependentKey, function(){
     var value = get(this, dependentKey);
-    if (value == null) return value;
+    if (value == null) {
+      return value;
+    }
     return encodeURIComponent(value);
   });
 }
@@ -304,7 +306,9 @@ var computed = Ember.computed;
 exports["default"] = function EmberCPM_encodeURI(dependentKey) {
   return computed(dependentKey, function(){
     var value = get(this, dependentKey);
-    if (value == null) return value;
+    if (value == null) {
+      return value;
+    }
     return encodeURI(value);
   });
 }
@@ -314,9 +318,7 @@ var Ember = window.Ember["default"] || window.Ember;
 
 var get = Ember.get;
 var computed = Ember.computed;
-var A = Ember.A;
 var isBlank = Ember.isBlank;
-var isEmpty = Ember.isEmpty;
 
 var a_slice = Array.prototype.slice;
 
@@ -337,7 +339,7 @@ exports["default"] = function EmberCPM_firstPresent() {
 
   computedArgs.push(function() {
     var that = this;
-    var property = A(properties).find(function(key) {
+    var property = Ember.A(properties).find(function(key) {
       return isPresent(get(that, key));
     });
 
@@ -385,7 +387,9 @@ exports["default"] = function EmberCPM_htmlEscape(dependentKey) {
   return computed(dependentKey, function(){
     var value = get(this, dependentKey);
 
-    if (value == null) return value;
+    if (value == null) {
+      return value;
+    }
 
     var escapedExpression = EmberHandlebars.Utils.escapeExpression(value);
     return new EmberHandlebars.SafeString(escapedExpression);
@@ -438,11 +442,12 @@ exports["default"] = function EmberCPM_notAmong(dependentKey) {
   var properties = Array.prototype.slice.call(arguments, 1);
 
   return computed(dependentKey, function(){
-    var value = get(this, dependentKey),
-      i;
+    var value = get(this, dependentKey);
 
-    for (i = 0; i < properties.length; ++i) {
-      if (properties[i] === value) return false;
+    for (var i = 0, l = properties.length; i < l; ++i) {
+      if (properties[i] === value) {
+        return false;
+      }
     }
 
     return true;
@@ -476,8 +481,7 @@ exports["default"] = function EmberCPM_notMatch(dependentKey, regexp) {
 }
 },{}],17:[function(_dereq_,module,exports){
 "use strict";
-var Ember = window.Ember["default"] || window.Ember;
-var reduceComputedPropertyMacro = _dereq_("./utils").reduceComputedPropertyMacro;
+var reduceComputedPropertyMacro = _dereq_("../utils").reduceComputedPropertyMacro;
 
 /**
 *  Returns the product of some numeric properties and numeric constants
@@ -492,27 +496,24 @@ var reduceComputedPropertyMacro = _dereq_("./utils").reduceComputedPropertyMacro
 *    e: product('a', 'b', 'c', 2) // 168
 */
 
-var EmberCPM_product = reduceComputedPropertyMacro(
+exports["default"] = reduceComputedPropertyMacro(
   function (prev, item) {
     return prev * item;
   }
 );
-
-exports["default"] = EmberCPM_product;
-},{"./utils":22}],18:[function(_dereq_,module,exports){
+},{"../utils":22}],18:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
 
 var get = Ember.get;
 var computed = Ember.computed;
-var $ = Ember.$;
 
 // TODO: Use RSVP?
 exports["default"] = function EmberCPM_promise(dependentKey) {
   return computed(dependentKey, function(){
     var value = get(this, dependentKey);
     if (value == null) { return value; }
-    return $.when(value);
+    return Ember.$.when(value);
   });
 }
 },{}],19:[function(_dereq_,module,exports){
@@ -543,11 +544,11 @@ exports["default"] = function EmberCPM_sumBy(dependentKey, propertyKey) {
   return reduceComputed(dependentKey + '.@each.' + propertyKey, {
     initialValue: 0.0,
 
-    addedItem: function(accumulatedValue, item, changeMeta, instanceMeta){
+    addedItem: function(accumulatedValue, item /*, changeMeta, instanceMeta */){
       return accumulatedValue + parseFloat(get(item, propertyKey));
     },
 
-    removedItem: function(accumulatedValue, item, changeMeta, instanceMeta){
+    removedItem: function(accumulatedValue, item /*, changeMeta, instanceMeta */){
       return accumulatedValue - parseFloat(get(item, propertyKey));
     }
   });
@@ -555,8 +556,8 @@ exports["default"] = function EmberCPM_sumBy(dependentKey, propertyKey) {
 },{}],21:[function(_dereq_,module,exports){
 "use strict";
 var Ember = window.Ember["default"] || window.Ember;
-var reduceComputedPropertyMacro = _dereq_("./utils").reduceComputedPropertyMacro;
-var getVal = _dereq_("./utils").getVal;
+var reduceComputedPropertyMacro = _dereq_("../utils").reduceComputedPropertyMacro;
+var getVal = _dereq_("../utils").getVal;
 /**
 *  Returns the sum of some numeric properties and numeric constants
 *
@@ -593,8 +594,10 @@ var EmberCPM_sum = reduceComputedPropertyMacro(
 );
 
 exports["default"] = EmberCPM_sum;
-},{"./utils":22}],22:[function(_dereq_,module,exports){
+},{"../utils":22}],22:[function(_dereq_,module,exports){
 "use strict";
+var Ember = window.Ember["default"] || window.Ember;
+
 /**
  * Retain items in an array based on type
  * @param {array} arr  array to iterate over
@@ -618,7 +621,6 @@ function retainByType(arr, type) {
 
 exports.retainByType = retainByType;
 function getDependentPropertyKeys(argumentArr) {
-
   return argumentArr.reduce(
     function (prev, item) {
       switch (Ember.typeOf(item)) {
@@ -670,8 +672,8 @@ exports.getVal = getVal;/**
  * @param {[type]} reducingFunction [description]
  */
 function reduceComputedPropertyMacro(reducingFunction, options) {
-  var opts = options || {},
-    singleItemCallback = opts.singleItemCallback || function (item) {return getVal.call(this,item);};
+  var opts = options || {};
+  var singleItemCallback = opts.singleItemCallback || function (item) {return getVal.call(this,item);};
 
   return function () {
     var mainArguments = Array.prototype.slice.call(arguments), // all arguments
@@ -709,6 +711,6 @@ function reduceComputedPropertyMacro(reducingFunction, options) {
 }
 
 exports.reduceComputedPropertyMacro = reduceComputedPropertyMacro;
-},{}]},{},[6])
-(6)
+},{}]},{},[1])
+(1)
 });

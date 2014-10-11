@@ -1,7 +1,9 @@
 define(
-  ["exports"],
-  function(__exports__) {
+  ["ember","exports"],
+  function(__dependency1__, __exports__) {
     "use strict";
+    var Ember = __dependency1__["default"] || __dependency1__;
+
     /**
      * Retain items in an array based on type
      * @param {array} arr  array to iterate over
@@ -25,7 +27,6 @@ define(
 
     __exports__.retainByType = retainByType;
     function getDependentPropertyKeys(argumentArr) {
-
       return argumentArr.reduce(
         function (prev, item) {
           switch (Ember.typeOf(item)) {
@@ -77,8 +78,8 @@ define(
      * @param {[type]} reducingFunction [description]
      */
     function reduceComputedPropertyMacro(reducingFunction, options) {
-      var opts = options || {},
-        singleItemCallback = opts.singleItemCallback || function (item) {return getVal.call(this,item);};
+      var opts = options || {};
+      var singleItemCallback = opts.singleItemCallback || function (item) {return getVal.call(this,item);};
 
       return function () {
         var mainArguments = Array.prototype.slice.call(arguments), // all arguments
